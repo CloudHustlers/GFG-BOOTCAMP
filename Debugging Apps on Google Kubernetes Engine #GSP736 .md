@@ -11,13 +11,19 @@ cd microservices-demo
 kubectl apply -f release/kubernetes-manifests.yaml
 export EXTERNAL_IP=$(kubectl get service frontend-external | awk 'BEGIN { cnt=0; } { cnt+=1; if (cnt > 1) print $4; }')
 curl -o /dev/null -s -w "%{http_code}\n"  http://$EXTERNAL_IP
+gcloud logging metrics create Error_Rate_SLI \
+    --description="Error rate service level indicator" \
+    --log-filter='resource.type="k8s_container" severity=ERROR labels."k8s-pod/app": "recommendationservice"'
 ```
-> Search ```logging``` > create matrix
+>Search ```Create alerting policy``` > Select a metric 
 
-> Name ```Error_Rate_SLI``` > Paste the below code in build filter > Create Metric
-```cmd
-resource.type="k8s_container"
-severity=ERROR
-labels."k8s-pod/app": "recommendationservice"
-```
-> Perform task 5 manually 
+>Disable the Show only active resources & metrics
+
+>filter by resource and metric ```Error_Rate```
+
+> Kubernetes Container > Logs-Based Metric > logging/user/Error_Rate_SLI > Apply
+
+> Next > Threshold value ```0.5``` > Disable Use notification channel
+
+>Alter Policy Name ```Error Rate SLI``` > Create Policy
+
