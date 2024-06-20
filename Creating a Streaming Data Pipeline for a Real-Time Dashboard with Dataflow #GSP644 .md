@@ -37,7 +37,7 @@ gcloud builds submit \
 gcloud run deploy pdf-converter \
   --image gcr.io/$GOOGLE_CLOUD_PROJECT/pdf-converter \
   --platform managed \
-  --region Lab Region \
+  --region $REGION \
   --memory=2Gi \
   --no-allow-unauthenticated \
   --max-instances=1 \
